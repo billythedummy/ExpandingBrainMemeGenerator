@@ -1,7 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont
 import random
+import math
 
-ASPECT_RATIO = 2.86 #width of one cell
+ASPECT_RATIO = 2.86 #aspect ratio of a single cell
 CELL_HEIGHT = 301
 CELL_WIDTH = int(ASPECT_RATIO * CELL_HEIGHT)
 N_BRAIN_IMAGES = 15 #number of images in collection sorted by ascending order of gayness
@@ -9,7 +10,7 @@ N_BRAIN_IMAGES = 15 #number of images in collection sorted by ascending order of
 class Cell:
     #fields: brainImage, caption, outputImage
     def __init__(self, brainImage, caption):
-        self.brainImage = brainImage #pillow image object of brain.jpg
+        self.brainImage = brainImage #pillow image object of brain.png
         self.caption = caption
 
     def drawImg(self):
@@ -28,11 +29,11 @@ class Cell:
         draw.line((0,CELL_HEIGHT, CELL_WIDTH,CELL_HEIGHT), fill = 0, width=3)
 
     def drawText(self):
-        fontSize = 56
         sidePadding = 5
         topPadding = 5
         textBoxWidth = int(CELL_WIDTH/2 - 2*sidePadding)
         textBoxHeight = int(CELL_HEIGHT/2 - 2*topPadding)
+        fontSize = self.calculateFontSize(self.caption, textBoxWidth, textBoxHeight)
         charArray = list(self.caption)
         rowWidth = len(charArray)*fontSize
         heightOffset = 0
@@ -81,14 +82,13 @@ class Cell:
                 res.append(index2)
         return res
     
-    '''
-    TO BE CONTINUED
-    def calculateFontSize(self):
-        sidePadding = 5
-        topPadding = 5
-        textBoxWidth = CELL_WIDTH/2 - 2*sidePadding
-        textBoxHeight = CELL_HEIGHT/2 - 2*topPadding
-    '''
+    def calculateFontSize(self, captionStr, textBoxWidth, textBoxHeight):
+        #just a very rough gauge based on area for now
+        effectiveArea = 2*textBoxWidth*textBoxHeight #ttf width half
+        sizeGauge = math.sqrt(effectiveArea/len(captionStr))
+        print("sizeGauge", sizeGauge)
+        return int(0.5*sizeGauge) #arbitrary magic number 0.5 lol
+        
     
 class Generator:
     #fields: captions, brainImages
@@ -127,6 +127,7 @@ class Generator:
         
     
 if __name__ == "__main__":
-    testGen = Generator(["fuck your mother go and die", "ka ni na bu chao chee bye", "nbcb", "F"])
+    #breaks when input string is too long
+    testGen = Generator(["Hello", "Is it me you're looking for?", "I can see it in your eyes", "I can see it in your smile"])
     testGen.drawImage()
     #YOU'RE GONNA HAVE TO SAVE IT SOMEWHERE TO OUTPUT IT I SUPPOSE
