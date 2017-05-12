@@ -43,6 +43,8 @@ class Cell:
             for i in range(0, len(charArray)):
                 if charArray[i] == " ":
                     spaceIndices.append(i)
+            if len(spaceIndices) == 0: #no spaces in caption
+                fontSize = 24 #set fontSize to 24 and hope for the best
             print("spaceIndices", spaceIndices)
             breakIndices = self.bisectGetBreaks(len(charArray), spaceIndices, fontSize, textBoxWidth*2) #because ttf width is haalf of fontSize
             breakIndices.sort()
@@ -70,6 +72,8 @@ class Cell:
 
     def bisectGetBreaks(self, charArrayLen, spaceIndices, fontSize, widthLimit):
         mid = int(len(spaceIndices)/2)
+        if mid == 0:
+            return []
         midSpace = spaceIndices[mid]
         res = [midSpace]
         if (midSpace)*fontSize > widthLimit:
@@ -128,6 +132,6 @@ class Generator:
     
 if __name__ == "__main__":
     #breaks when input string is too long
-    testGen = Generator(["Hello", "Is it me you're looking for?", "I can see it in your eyes", "I can see it in your smile"])
+    testGen = Generator(["cock", "penis", "Z y s p u r p l e s n a k e"])
     testGen.drawImage()
     #YOU'RE GONNA HAVE TO SAVE IT SOMEWHERE TO OUTPUT IT I SUPPOSE
